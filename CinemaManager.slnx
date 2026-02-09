@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CinemaManager.ConsoleUI/CinemaManager.ConsoleUI.csproj" />
+  <Project Path="CinemaManager.DB/CinemaManager.DB.csproj" />
+  <Project Path="CinemaManager.Models/CinemaManager.Models.csproj" />
+  <Project Path="CinemaManager.UI/CinemaManager.UI.csproj" />
+</Solution>
