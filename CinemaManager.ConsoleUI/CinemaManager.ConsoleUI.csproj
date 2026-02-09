@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CinemaManager.DB\CinemaManager.DB.csproj" />
+    <ProjectReference Include="..\CinemaManager.Models\CinemaManager.Models.csproj" />
     <ProjectReference Include="..\CinemaManager.UI\CinemaManager.UI.csproj" />
   </ItemGroup>
 
