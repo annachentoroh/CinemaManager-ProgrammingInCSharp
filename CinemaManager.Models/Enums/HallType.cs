@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CinemaManager.Models.Enums
+﻿namespace CinemaManager.Models.Enums
 {
-    internal class HallType
+    public enum HallType
     {
+        TwoD,
+        ThreeD,
+        IMAX
     }
 }

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CinemaManager.Models.Enums
+﻿namespace CinemaManager.Models.Enums
 {
-    internal class Genre
+    public enum Genre
     {
+        Horror,
+        Cartoon,
+        Drama,
+        Comedy,
+        Fantasy
     }
 }
