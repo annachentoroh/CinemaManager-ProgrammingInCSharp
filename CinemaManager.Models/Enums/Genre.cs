@@ -6,6 +6,8 @@
         Cartoon,
         Drama,
         Comedy,
-        Fantasy
+        Fantasy,
+        Action,
+        Thriller,
     }
 }
