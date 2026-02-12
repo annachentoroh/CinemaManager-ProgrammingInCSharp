@@ -6,12 +6,12 @@ using CinemaManager.Models.Enums;
 
 namespace CinemaManager.UI
 {
-    public class CinemaHallModel
+    public class CinemaHallUI
     {
         private readonly CinemaHall _entity;
         public List<MovieSessionUI> Sessions { get; set; } = new List<MovieSessionUI>();
 
-        public CinemaHallModel(CinemaHall entity)
+        public CinemaHallUI(CinemaHall entity)
         {
             _entity = entity;
         }
