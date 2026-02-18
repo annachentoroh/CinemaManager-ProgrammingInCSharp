@@ -9,6 +9,8 @@ namespace CinemaManager.Models.Entities
         public int SeatsCount { get; set; }
         public HallType HallType { get; set; }
 
+        public List<MovieSession> MovieSessions { get; set; } = new List<MovieSession>();
+
         public CinemaHall(Guid id, string name, int seatsCount, HallType hallType)
         {
             Id = id;
@@ -16,5 +18,14 @@ namespace CinemaManager.Models.Entities
             SeatsCount = seatsCount;
             HallType = hallType;
         }
+
+        public CinemaHall(dynamic data)
+        {
+            Id = data.Id;
+            Name = data.Name;
+            SeatsCount = data.SeatsCount;
+            HallType = data.HallType;
+        }
+        public CinemaHall() { } //for future
     }
 }

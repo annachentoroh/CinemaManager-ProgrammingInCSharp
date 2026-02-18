@@ -10,7 +10,7 @@ namespace CinemaManager.UI
 
         public MovieSessionUI(MovieSession entity)
         {
-            _entity = entity;
+            _entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
 
         public Guid Id => _entity.Id;
@@ -23,11 +23,11 @@ namespace CinemaManager.UI
         public Genre Genre => _entity.Genre;
         public DateTime StartTime => _entity.StartTime;
         public int DurationMinutes => _entity.DurationMinutes;
-        public DateTime EndTime => StartTime.AddMinutes(DurationMinutes);
+        public DateTime EndTime => _entity.StartTime.AddMinutes(_entity.DurationMinutes);
 
         public override string ToString()
         {
-            return $"{MovieTitle} ({Genre}) | {StartTime:HH:mm} - {EndTime:HH:mm}";
+            return $"{MovieTitle} ({Genre}, {_entity.ReleaseYear}) | {StartTime:HH:mm} - {EndTime:HH:mm} ({DurationMinutes} хв)";
         }
     }
 }

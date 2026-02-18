@@ -13,7 +13,7 @@ namespace CinemaManager.UI
 
         public CinemaHallUI(CinemaHall entity)
         {
-            _entity = entity;
+            _entity = entity ?? throw new ArgumentNullException(nameof(entity));
         }
 
         public Guid Id => _entity.Id;
@@ -28,7 +28,7 @@ namespace CinemaManager.UI
 
         public override string ToString()
         {
-            return $"Зал: {Name} [{HallType}] - Місць: {SeatsCount}";
+            return $"Зал: {Name} [{HallType}] | Місць: {SeatsCount} | Сеансів: {Sessions.Count} | Загальна тривалість: {TotalDurationMinutes} год";
         }
     }
 }

@@ -29,5 +29,19 @@ namespace CinemaManager.Models.Entities
             StartTime = startTime;
             DurationMinutes = durationMinutes;
         }
+
+        // Конструктор для мапінгу
+        public MovieSession(dynamic data)
+        {
+            Id = data.Id;
+            CinemaHallId = data.CinemaHallId;
+            MovieTitle = data.MovieTitle;
+            Genre = data.Genre;
+            ReleaseYear = data.ReleaseYear;
+            StartTime = data.StartTime;
+            DurationMinutes = data.DurationMinutes;
+        }
+
+        public MovieSession() { }
     }
 }
