@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CinemaManager.Models.Entities;
+﻿using CinemaManager.Models.Entities;
 using CinemaManager.Models.Enums;
 
 namespace CinemaManager.UI
 {
+    /// <summary>
+    /// Клас для відображення та взаємодії з кінозалом у користувацькому інтерфейсі.
+    /// </summary>
     public class CinemaHallUI
     {
         private readonly CinemaHall _entity;
@@ -24,6 +24,11 @@ namespace CinemaManager.UI
         }
         public int SeatsCount => _entity.SeatsCount;
         public HallType HallType => _entity.HallType;
+
+        /// <summary>
+        /// Загальна тривалість усіх сеансів у залі (обчислюване поле).
+        /// Обчислюється автоматично на основі тривалостей сеансів.
+        /// </summary>
         public double TotalDurationMinutes => Sessions.Sum(s => s.DurationMinutes);
 
         public override string ToString()

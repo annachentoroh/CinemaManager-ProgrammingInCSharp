@@ -1,32 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CinemaManager.Models.Entities;
-//using CinemaManager.UI;
+﻿using CinemaManager.Models.Entities;
 
 namespace CinemaManager.DB
 {
+    /// <summary>
+    /// Клас, який відповідає за взаємодію зі сховищем.
+    /// Надає доступ до сутностей зберігання.
+    /// </summary>
     public class CinemaRepo
     {
-        public List<CinemaHall> GetAllHalls()
+        public List<CinemaHall> GetAllHalls() // Отримання всіх залів (сутностей першого рівня)
         {
-            // Використовуємо .Select для трансформації даних у моделі
-            return Database.CinemaHalls
-                .Select(hData => new CinemaHall(hData))
-                .ToList();
+            return Database.CinemaHalls.ToList();
         }
 
-        public void LoadSessionsForHall(CinemaHall hallModel)
+        // Отримання сеансів, пов'язаних з конкретним залом за його ID
+        public List<MovieSession> GetSessionsByHallId(Guid hallId)
         {
-            if (hallModel == null) return;
-
-            // Отримуємо дані, фільтруємо та перетворюємо в моделі одним ланцюжком
-            var sessions = Database.MovieSessions
-                .Where(s => s.CinemaHallId == hallModel.Id)
-                .Select(sData => new MovieSession(sData))
+            return Database.MovieSessions
+                .Where(s => s.CinemaHallId == hallId)
                 .ToList();
-
-            hallModel.MovieSessions = sessions;
         }
     }
 }

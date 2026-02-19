@@ -3,6 +3,10 @@ using CinemaManager.Models.Enums;
 
 namespace CinemaManager.DB
 {
+    /// <summary>
+    /// Статичний клас, який імітує штучне сховище даних.
+    /// Доступ до нього здійснюється лише через CinemaRepo,тому клас має модифікатор internal.
+    /// </summary>
     internal static class Database
     {
         public static List<CinemaHall> CinemaHalls { get; } = new List<CinemaHall>();
@@ -14,6 +18,13 @@ namespace CinemaManager.DB
             Data();
         }
 
+        /// <summary>
+        /// Заповнює сховище початковими даними:
+        /// - мінімум 3 кінозали
+        /// - мінімум 12 кіносеансів
+        /// - 10 сеансів належать одному залу
+        /// - 2 сеанси належать іншому залу
+        /// </summary>
         public static void Data() 
         {
             var hall1 = new CinemaHall(Guid.NewGuid(), "IMAX hall", 120, HallType.IMAX);

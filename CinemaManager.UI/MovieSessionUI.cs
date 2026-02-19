@@ -1,9 +1,12 @@
-﻿using System;
-using CinemaManager.Models.Entities;
+﻿using CinemaManager.Models.Entities;
 using CinemaManager.Models.Enums;
 
 namespace CinemaManager.UI
 {
+    /// <summary>
+    /// Клас для відображення кіносеансу.
+    /// Містить обчислювані поля, необхідні для представлення.
+    /// </summary>
     public class MovieSessionUI
     {
         private readonly MovieSession _entity;
@@ -23,6 +26,10 @@ namespace CinemaManager.UI
         public Genre Genre => _entity.Genre;
         public DateTime StartTime => _entity.StartTime;
         public int DurationMinutes => _entity.DurationMinutes;
+
+        /// <summary>
+        /// Час завершення показу (обчислюється на основі часу початку та тривалості).
+        /// </summary>
         public DateTime EndTime => _entity.StartTime.AddMinutes(_entity.DurationMinutes);
 
         public override string ToString()

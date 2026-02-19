@@ -1,13 +1,9 @@
-﻿using System;
-using System.Text;
-using System.Linq;
-using System.Collections.Generic;
-using CinemaManager.UI;
-using CinemaManager.DB;
-using CinemaManager.Models.Entities;
-
-namespace CinemaManager.ConsoleUI
+﻿namespace CinemaManager.ConsoleUI
 {
+    /// <summary>
+    /// Точка входу в консольний застосунок.
+    /// Відповідає за взаємодію з користувачем.
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
@@ -20,26 +16,29 @@ namespace CinemaManager.ConsoleUI
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("=== МЕНЕДЖЕР КІНОСЕАНСІВ ===");
+                Console.WriteLine("МЕНЕДЖЕР КІНОСЕАНСІВ\n");
 
-                //(Entities)
+                // Отримуємо сутності першого рівня
                 List<CinemaHall> hallEntities = storageService.GetAllHalls();
 
+                // Формуємо UI-моделі
                 List<CinemaHallUI> uiHalls = hallEntities
-                                             .Select(h => new CinemaHallUI(h))
-                                             .ToList();
+                    .Select(h => new CinemaHallUI(h))
+                    .ToList();
 
                 Console.WriteLine("Список кінозалів:");
+
                 for (int i = 0; i < uiHalls.Count; i++)
                 {
                     var uiHall = uiHalls[i];
 
-                    var originalEntity = hallEntities[i];
-                    storageService.LoadSessionsForHall(originalEntity);
+                    // Завантажуємо сеанси через Repository
+                    var sessionEntities = storageService
+                        .GetSessionsByHallId(uiHall.Id);
 
-                   
-                    //Синх Entity -> UI
-                    UpdateUISessions(uiHall, originalEntity);
+                    uiHall.Sessions = sessionEntities
+                        .Select(s => new MovieSessionUI(s))
+                        .ToList();
 
                     Console.WriteLine($"{i + 1}. {uiHall}");
                 }
@@ -47,67 +46,51 @@ namespace CinemaManager.ConsoleUI
                 Console.WriteLine("0. Вихід");
                 Console.Write("\nОберіть номер залу для перегляду деталей: ");
 
-                if (int.TryParse(Console.ReadLine(), out int choice))
+                if (!int.TryParse(Console.ReadLine(), out int choice))
+                    continue;
+
+                if (choice == 0)
+                    break;
+
+                if (choice > 0 && choice <= uiHalls.Count)
                 {
-                    if (choice == 0) break;
-
-                    if (choice > 0 && choice <= uiHalls.Count)
-                    {
-                        var selectedUIHall = uiHalls[choice - 1];
-
-                        // Передаємо його у метод відображення
-                        ShowHallDetails(selectedUIHall);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Невірний номер. Натисніть Enter.");
-                        Console.ReadLine();
-                    }
-                }
-            }
-        }
-
-        // Цей метод допомагає перекласти сеанси з Entity в UI
-        static void UpdateUISessions(CinemaHallUI uiModel, CinemaHall entityModel)
-        {
-            uiModel.Sessions.Clear();
-            foreach (var sessionEntity in entityModel.MovieSessions)
-            {
-                // Обгортаємо сеанс-entity в сеанс-UI і додаємо в список UI-залу
-                uiModel.Sessions.Add(new MovieSessionUI(sessionEntity));
-            }
-        }
-
-        // Тепер цей метод приймає CinemaHallUI, а не CinemaHall
-        static void ShowHallDetails(CinemaHallUI hall)
-        {
-            while (true)
-            {
-                Console.Clear();
-
-                // Тут спрацює ToString() з CinemaHallUI
-                Console.WriteLine($"--- ДЕТАЛІ ЗАЛУ: {hall.Name} ---");
-                Console.WriteLine(hall.ToString());
-                Console.WriteLine("-----------------------------");
-
-                if (hall.Sessions.Count == 0)
-                {
-                    Console.WriteLine("Сеанси відсутні.");
+                    ShowHallDetails(uiHalls[choice - 1]);
                 }
                 else
                 {
-                    Console.WriteLine("КІНОСЕАНСИ:");
-                    for (int i = 0; i < hall.Sessions.Count; i++)
-                    {
-                        // Тут спрацює ToString() з MovieSessionUI
-                        Console.WriteLine($"{i + 1}. {hall.Sessions[i]}");
-                    }
+                    Console.WriteLine("Невірний номер. Натисніть Enter.");
+                    Console.ReadLine();
                 }
-
-                Console.WriteLine("\nНатисніть Enter, щоб повернутися до списку залів...");
-                Console.ReadLine();
-                break;
             }
+        }
+
+        /// <summary>
+        /// Відображає детальну інформацію про вибраний кінозал
+        /// та список його кіносеансів.
+        /// </summary>
+        static void ShowHallDetails(CinemaHallUI hall)
+        {
+            Console.Clear();
+
+            Console.WriteLine($"ДЕТАЛІ ЗАЛУ: {hall.Name} ");
+            Console.WriteLine(hall);
+
+            if (hall.Sessions.Count == 0)
+            {
+                Console.WriteLine("Сеанси відсутні.");
+            }
+            else
+            {
+                Console.WriteLine("КІНОСЕАНСИ:");
+
+                for (int i = 0; i < hall.Sessions.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {hall.Sessions[i]}");
+                }
+            }
+
+            Console.WriteLine("\nНатисніть Enter, щоб повернутися до списку залів...");
+            Console.ReadLine();
         }
     }
 }
