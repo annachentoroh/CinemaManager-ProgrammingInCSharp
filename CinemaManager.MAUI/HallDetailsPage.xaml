@@ -1,0 +1,32 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CinemaManager.MAUI.HallDetailsPage"
+             Title="Деталі Залу">
+
+    <Grid Padding="20" RowDefinitions="Auto, *">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="5" Margin="0,0,0,10">
+            <Label x:Name="HallNameLabel" FontSize="24" FontAttributes="Bold" />
+            <Label x:Name="HallInfoLabel" FontSize="16" Margin="0,0,0,10" />
+            <Label Text="Кіносеанси:" FontSize="20" FontAttributes="Bold" />
+        </VerticalStackLayout>
+
+        <CollectionView x:Name="SessionsCollection" 
+                        Grid.Row="1"
+                        SelectionMode="Single" 
+                        SelectionChanged="OnSessionSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="0,5" Padding="15" BorderColor="LightGray" CornerRadius="8">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding MovieTitle}" FontSize="16" FontAttributes="Bold"/>
+                            <Label Text="{Binding Genre, StringFormat='Жанр: {0}'}"/>
+                            <Label Text="{Binding StartTime, StringFormat='Початок: {0:HH:mm}'}"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>
