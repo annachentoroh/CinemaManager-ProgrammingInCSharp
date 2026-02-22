@@ -1,4 +1,9 @@
-﻿namespace CinemaManager.ConsoleUI
+﻿using CinemaManager.DB;
+using CinemaManager.Models.Entities;
+using CinemaManager.UI;
+using System.Text;
+
+namespace CinemaManager.ConsoleUI
 {
     /// <summary>
     /// Точка входу в консольний застосунок.
