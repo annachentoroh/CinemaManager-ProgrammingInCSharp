@@ -1,6 +1,9 @@
 <Solution>
   <Project Path="CinemaManager.ConsoleUI/CinemaManager.ConsoleUI.csproj" />
   <Project Path="CinemaManager.DB/CinemaManager.DB.csproj" />
+  <Project Path="CinemaManager.MAUI/CinemaManager.MAUI.csproj" Id="d458523d-0154-47d5-a8b3-4b3d4b8aa2f7">
+    <Deploy Solution="Debug|*" />
+  </Project>
   <Project Path="CinemaManager.Models/CinemaManager.Models.csproj" />
   <Project Path="CinemaManager.UI/CinemaManager.UI.csproj" />
 </Solution>
