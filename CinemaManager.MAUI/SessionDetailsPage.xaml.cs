@@ -27,6 +27,7 @@ public partial class SessionDetailsPage : ContentPage
         if (_session == null) return;
 
         MovieTitleLabel.Text = _session.MovieTitle;
+        YearLabel.Text = $"Рік випуску: {(_session as dynamic)._entity.ReleaseYear}";
         GenreLabel.Text = $"Жанр: {_session.Genre}";
         DurationLabel.Text = $"Тривалість: {_session.DurationMinutes} хвилин";
         TimeLabel.Text = $"Час показу: {_session.StartTime:HH:mm} - {_session.EndTime:HH:mm}";
