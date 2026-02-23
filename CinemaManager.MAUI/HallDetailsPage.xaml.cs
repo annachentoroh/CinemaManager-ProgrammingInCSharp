@@ -31,6 +31,7 @@ public partial class HallDetailsPage : ContentPage
 
         HallNameLabel.Text = _hall.Name;
         HallInfoLabel.Text = $"Тип: {_hall.HallType} | Місць: {_hall.SeatsCount}";
+        TotalDurationLabel.Text = $"Загальний час фільмів у залі: {_hall.TotalDurationMinutes} хв";
 
         // Завантаження сеансів через сервіс
         var sessionEntities = _storageService.GetSessionsByHallId(_hall.Id);
