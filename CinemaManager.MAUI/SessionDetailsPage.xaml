@@ -1,10 +1,11 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage BackgroundColor="LavenderBlush"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CinemaManager.MAUI.SessionDetailsPage"
              Title="Деталі Сеансу">
 
     <StackLayout Padding="20" Spacing="10">
-        <Label x:Name="MovieTitleLabel" FontSize="26" FontAttributes="Bold"/>
+        <Label x:Name="MovieTitleLabel" FontSize="26" TextColor="RoyalBlue" FontAttributes="Bold"/>
         <Label x:Name="YearLabel" FontSize="14" TextColor="Gray" />
 
         <BoxView HeightRequest="1" Color="Gray" Margin="0,10"/>
