@@ -13,6 +13,7 @@ namespace CinemaManager.Models.Entities
         public int SeatsCount { get; set; }
         public HallType HallType { get; set; } // Тип кінозалу (2D, 3D, IMAX)
 
+        public List<MovieSession> Sessions { get; set; } = new();
         public CinemaHall(Guid id, string name, int seatsCount, HallType hallType)
         {
             Id = id;
