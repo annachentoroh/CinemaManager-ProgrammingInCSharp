@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CinemaManager.Services.DTO;
 
 namespace CinemaManager.Services
 {
-    internal interface ICinemaService
+    public interface ICinemaService
     {
+        // Отримати всі зали для головної сторінки
+        IEnumerable<CinemaHallListDTO> GetAllHalls();
+
+        // Отримати деталі залу та його сеанси для другої сторінки
+        CinemaHallDetailsDTO GetHallDetails(Guid hallId);
+
+        // Отримати деталі конкретного сеансу для третьої сторінки
+        MovieSessionDetailsDTO GetSessionDetails(Guid sessionId);
     }
 }

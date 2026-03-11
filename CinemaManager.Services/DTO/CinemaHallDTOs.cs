@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CinemaManager.Services.DTO
+﻿namespace CinemaManager.Services.DTO
 {
-    internal class CinemaHallDTOs
+    // Модель для списку
+    public class CinemaHallListDTO
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    // Модель для деталей
+    public class CinemaHallDetailsDTO
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int TotalSeats { get; set; }
+
+        // Список сеансів у цьому залі
+        public List<MovieSessionListDTO> Sessions { get; set; } = new();
     }
 }
