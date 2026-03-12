@@ -1,4 +1,6 @@
 ﻿using CinemaManager.DB;
+using CinemaManager.Services;
+
 
 namespace CinemaManager.MAUI;
 
@@ -17,6 +19,7 @@ public static class MauiProgram
 
         // Реєстрація сервісів (Dependency Injection)
         builder.Services.AddSingleton<ICinemaRepo, CinemaRepo>();
+        builder.Services.AddSingleton<ICinemaService, CinemaService>();
 
         // Реєстрація сторінок
         builder.Services.AddTransient<MainPage>();

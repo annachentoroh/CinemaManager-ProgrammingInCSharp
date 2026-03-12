@@ -29,12 +29,14 @@ namespace CinemaManager.Services
             var hall = _repository.GetHallById(hallId);
             if (hall == null) return null;
 
+            var sessions = _repository.GetSessionsByHallId(hallId);
+
             return new CinemaHallDetailsDTO
             {
                 Id = hall.Id,
                 Name = hall.Name,
                 TotalSeats = hall.SeatsCount,
-                Sessions = hall.Sessions.Select(s => new MovieSessionListDTO
+                Sessions = sessions.Select(s => new MovieSessionListDTO
                 {
                     Id = s.Id,
                     MovieTitle = s.MovieTitle,
