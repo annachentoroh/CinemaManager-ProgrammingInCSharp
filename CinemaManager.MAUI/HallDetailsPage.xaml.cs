@@ -1,12 +1,14 @@
-using CinemaManager.DB;
+using CinemaManager.Services;
 using CinemaManager.UI;
+using CinemaManager.Models.Entities;
 
 namespace CinemaManager.MAUI;
 
 [QueryProperty(nameof(Hall), "SelectedHall")]
 public partial class HallDetailsPage : ContentPage
 {
-    private readonly ICinemaRepo _storageService;
+    // 1. Змінюємо репозиторій на сервіс
+    private readonly ICinemaService _cinemaService;
     private CinemaHallUI _hall;
 
     public CinemaHallUI Hall
@@ -19,25 +21,37 @@ public partial class HallDetailsPage : ContentPage
         }
     }
 
-    public HallDetailsPage(ICinemaRepo storageService)
+    // 2. Впроваджуємо сервіс через конструктор
+    public HallDetailsPage(ICinemaService cinemaService)
     {
         InitializeComponent();
-        _storageService = storageService;
+        _cinemaService = cinemaService;
     }
 
     private void LoadHallData()
     {
         if (_hall == null) return;
-
         HallNameLabel.Text = _hall.Name;
         HallInfoLabel.Text = $"Тип: {_hall.HallType} | Місць: {_hall.SeatsCount}";
 
-        // Завантаження сеансів через сервіс
-        var sessionEntities = _storageService.GetSessionsByHallId(_hall.Id);
-        _hall.Sessions = sessionEntities.Select(s => new MovieSessionUI(s)).ToList();
-        TotalDurationLabel.Text = $"Загальний час фільмів у залі: {_hall.TotalDurationMinutes} хв";
+        // Завантаження деталей залу та сеансів через сервіс (використовуємо DTO)
+        var hallDetails = _cinemaService.GetHallDetails(_hall.Id);
 
-        SessionsCollection.ItemsSource = _hall.Sessions;
+        if (hallDetails != null)
+        {
+            // Конвертуємо MovieSessionListDTO з сервісу назад у MovieSessionUI для відображення
+            _hall.Sessions = hallDetails.Sessions.Select(s => new MovieSessionUI(new MovieSession(
+                s.Id,
+                _hall.Id,
+                s.MovieTitle,
+                Models.Enums.Genre.Drama,
+                2024,
+                s.StartTime,
+                120))).ToList();
+
+            TotalDurationLabel.Text = $"Загальний час фільмів у залі: {_hall.TotalDurationMinutes} хв";
+            SessionsCollection.ItemsSource = _hall.Sessions;
+        }
     }
 
     private async void OnSessionSelected(object sender, SelectionChangedEventArgs e)
@@ -45,7 +59,7 @@ public partial class HallDetailsPage : ContentPage
         if (e.CurrentSelection.FirstOrDefault() is MovieSessionUI selectedSession)
         {
             var parameters = new Dictionary<string, object> { { "SelectedSession", selectedSession } };
-            await Shell.Current.GoToAsync(nameof(SessionDetailsPage), parameters); // Перехід на деталі сеансу
+            await Shell.Current.GoToAsync(nameof(SessionDetailsPage), parameters);
             SessionsCollection.SelectedItem = null;
         }
     }
