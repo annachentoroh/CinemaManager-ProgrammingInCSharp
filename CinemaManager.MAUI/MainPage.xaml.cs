@@ -1,23 +1,34 @@
-﻿using CinemaManager.DB;
+﻿using CinemaManager.Services;
 using CinemaManager.UI;
 
 namespace CinemaManager.MAUI;
 
 public partial class MainPage : ContentPage
 {
-    private readonly ICinemaRepo _storageService;
+    // Тепер використовуємо сервіс замість репозиторію
+    private readonly ICinemaService _cinemaService;
 
-    public MainPage(ICinemaRepo storageService)
+    // Впроваджуємо сервіс через конструктор
+    public MainPage(ICinemaService cinemaService)
     {
         InitializeComponent();
-        _storageService = storageService;
+        _cinemaService = cinemaService;
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        var hallEntities = _storageService.GetAllHalls();
-        var uiHalls = hallEntities.Select(h => new CinemaHallUI(h)).ToList();
+
+        // Отримуємо дані через сервіс (DTO)
+        var hallDtos = _cinemaService.GetAllHalls();
+
+        var uiHalls = hallDtos.Select(dto => {
+            var details = _cinemaService.GetHallDetails(dto.Id);
+            return new CinemaHallUI(new Models.Entities.CinemaHall(
+                details.Id, details.Name, details.TotalSeats, Models.Enums.HallType.TwoD)
+            );
+        }).ToList();
+
         HallsCollection.ItemsSource = uiHalls;
     }
 
@@ -26,8 +37,8 @@ public partial class MainPage : ContentPage
         if (e.CurrentSelection.FirstOrDefault() is CinemaHallUI selectedHall)
         {
             var parameters = new Dictionary<string, object> { { "SelectedHall", selectedHall } };
-            await Shell.Current.GoToAsync(nameof(HallDetailsPage), parameters); // Перехід на деталі залу
-            HallsCollection.SelectedItem = null; // Скидання виділення
+            await Shell.Current.GoToAsync(nameof(HallDetailsPage), parameters);
+            HallsCollection.SelectedItem = null;
         }
     }
 }
