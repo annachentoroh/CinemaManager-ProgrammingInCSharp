@@ -15,5 +15,15 @@ namespace CinemaManager.DB
                 .Where(s => s.CinemaHallId == hallId)
                 .ToList();
         }
+
+        public CinemaHall GetHallById(Guid hallId)
+        {
+            return Database.CinemaHalls.FirstOrDefault(h => h.Id == hallId);
+        }
+
+        public MovieSession GetSessionById(Guid sessionId)
+        {
+            return Database.MovieSessions.FirstOrDefault(s => s.Id == sessionId);
+        }
     }
 }
