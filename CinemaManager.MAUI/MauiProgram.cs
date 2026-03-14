@@ -21,6 +21,10 @@ public static class MauiProgram
         builder.Services.AddSingleton<ICinemaRepo, CinemaRepo>();
         builder.Services.AddSingleton<ICinemaService, CinemaService>();
 
+        builder.Services.AddTransient<CinemaManager.MAUI.ViewModels.MainViewModel>();
+        builder.Services.AddTransient<CinemaManager.MAUI.ViewModels.HallDetailsViewModel>();
+        builder.Services.AddTransient<CinemaManager.MAUI.ViewModels.SessionDetailsViewModel>();
+
         // Реєстрація сторінок
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddTransient<HallDetailsPage>();

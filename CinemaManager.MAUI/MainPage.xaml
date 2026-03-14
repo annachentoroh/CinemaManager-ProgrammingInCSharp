@@ -7,14 +7,18 @@
     <StackLayout Padding="20">
         <Label Text="Список кінозалів:" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
 
-        <CollectionView x:Name="HallsCollection" SelectionMode="Single" SelectionChanged="OnHallSelected">
+        <CollectionView x:Name="HallsCollection" 
+                SelectionMode="Single" 
+                ItemsSource="{Binding Halls}"
+                SelectedItem="{Binding SelectedHall}"
+                SelectionChangedCommand="{Binding HallSelectedCommand}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Margin="0,5" Padding="15" BorderColor="Gray" CornerRadius="8">
                         <StackLayout>
                             <Label Text="{Binding Name}" FontSize="18" TextColor="Blue" FontAttributes="Bold"/>
                             <Label Text="{Binding HallType, StringFormat='Тип: {0}'}"/>
-                            <Label Text="{Binding SeatsCount, StringFormat='Місць: {0}'}"/>
+                            <Label Text="{Binding TotalSeats, StringFormat='Місць: {0}'}"/>
                         </StackLayout>
                     </Frame>
                 </DataTemplate>
