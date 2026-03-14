@@ -1,44 +1,56 @@
-﻿using CinemaManager.Services;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CinemaManager.Services;
 using CinemaManager.Services.DTO;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace CinemaManager.MAUI.ViewModels
 {
-    public class MainViewModel : BindableObject
+    public partial class MainViewModel : ObservableObject
     {
         private readonly ICinemaService _cinemaService;
 
-        public ObservableCollection<CinemaHallListDTO> Halls { get; set; }
+        // Тепер використовуємо CinemaHallDetailsDTO, бо там є TotalSeats
+        [ObservableProperty]
+        private ObservableCollection<CinemaHallDetailsDTO> halls;
 
-        private CinemaHallListDTO _selectedHall;
-        public CinemaHallListDTO SelectedHall
-        {
-            get => _selectedHall;
-            set { _selectedHall = value; OnPropertyChanged(); }
-        }
-
-        public ICommand HallSelectedCommand { get; }
+        [ObservableProperty]
+        private CinemaHallDetailsDTO selectedHall;
 
         public MainViewModel(ICinemaService cinemaService)
         {
             _cinemaService = cinemaService;
-            Halls = new ObservableCollection<CinemaHallListDTO>(_cinemaService.GetAllHalls());
-            HallSelectedCommand = new Command(LoadHall);
+            LoadHalls();
         }
 
-        private void LoadHall()
+        private void LoadHalls()
+        {
+            var basicHalls = _cinemaService.GetAllHalls();
+            var detailedHalls = new ObservableCollection<CinemaHallDetailsDTO>();
+
+            // Завантажуємо деталі для кожного залу, щоб відобразити місця
+            foreach (var basicHall in basicHalls)
+            {
+                var details = _cinemaService.GetHallDetails(basicHall.Id);
+                if (details != null)
+                {
+                    detailedHalls.Add(details);
+                }
+            }
+            Halls = detailedHalls;
+        }
+
+        [RelayCommand]
+        private async Task HallSelectedAsync()
         {
             if (SelectedHall == null) return;
 
-            // Надійний спосіб №1: Передача через словник
             var parameters = new Dictionary<string, object>
             {
                 { "HallId", SelectedHall.Id }
             };
 
-            Shell.Current.GoToAsync($"{nameof(HallDetailsPage)}", parameters);
-
+            await Shell.Current.GoToAsync(nameof(HallDetailsPage), parameters);
             SelectedHall = null;
         }
     }
