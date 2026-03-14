@@ -7,16 +7,21 @@
     <Grid Padding="20" RowDefinitions="Auto, *">
 
         <VerticalStackLayout Grid.Row="0" Spacing="5" Margin="0,0,0,10">
-            <Label x:Name="HallNameLabel" FontSize="24" TextColor="Blue" FontAttributes="Bold" />
-            <Label x:Name="HallInfoLabel" FontSize="16" Margin="0,0,0,10" />
+            <Label Text="{Binding HallDetails.Name}" FontSize="24" TextColor="Blue" FontAttributes="Bold" />
+            <HorizontalStackLayout Spacing="15" Margin="0,0,0,10">
+                <Label Text="{Binding HallDetails.HallType, StringFormat='Тип: {0}'}" FontSize="16" TextColor="DarkSlateGray" FontAttributes="Bold" />
+                <Label Text="{Binding HallDetails.TotalSeats, StringFormat='Кількість місць: {0}'}" FontSize="16" />
+            </HorizontalStackLayout>
             <Label Text="Кіносеанси:" FontSize="20" FontAttributes="Bold" />
-            <Label x:Name="TotalDurationLabel" FontSize="14" TextColor="DarkGreen" />
+            <Label Text="{Binding TotalDuration, StringFormat='Загальна тривалість: {0} хв'}" FontSize="14" TextColor="DarkGreen" />
         </VerticalStackLayout>
 
         <CollectionView x:Name="SessionsCollection" 
-                        Grid.Row="1"
-                        SelectionMode="Single" 
-                        SelectionChanged="OnSessionSelected">
+                Grid.Row="1"
+                SelectionMode="Single"
+                ItemsSource="{Binding HallDetails.Sessions}"
+                SelectedItem="{Binding SelectedSession}"
+                SelectionChangedCommand="{Binding SessionSelectedCommand}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Margin="0,5" Padding="15" BorderColor="LightGray" CornerRadius="8">
