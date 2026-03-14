@@ -1,35 +1,31 @@
-﻿using CinemaManager.Services;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CinemaManager.Services;
 using CinemaManager.Services.DTO;
 
 namespace CinemaManager.MAUI.ViewModels
 {
-    public class SessionDetailsViewModel : BindableObject, IQueryAttributable
+    // "Ловимо" параметр SessionId, який ми передали з другої сторінки
+    [QueryProperty(nameof(SessionId), "SessionId")]
+    public partial class SessionDetailsViewModel : ObservableObject
     {
         private readonly ICinemaService _cinemaService;
 
-        private MovieSessionDetailsDTO _sessionDetails;
-        public MovieSessionDetailsDTO SessionDetails
-        {
-            get => _sessionDetails;
-            set { _sessionDetails = value; OnPropertyChanged(); }
-        }
+        [ObservableProperty]
+        private Guid sessionId;
+
+        [ObservableProperty]
+        private MovieSessionDetailsDTO sessionDetails;
 
         public SessionDetailsViewModel(ICinemaService cinemaService)
         {
             _cinemaService = cinemaService;
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        // Автоматично спрацьовує, коли MAUI записує сюди отриманий ID
+        partial void OnSessionIdChanged(Guid value)
         {
-            if (query.TryGetValue("SessionId", out var sessionIdObj) && sessionIdObj is Guid id)
-            {
-                LoadSessionData(id);
-            }
-        }
-
-        private void LoadSessionData(Guid sessionId)
-        {
-            SessionDetails = _cinemaService.GetSessionDetails(sessionId);
+            // Отримуємо всі деталі сеансу з бази через сервіс
+            SessionDetails = _cinemaService.GetSessionDetails(value);
         }
     }
 }
