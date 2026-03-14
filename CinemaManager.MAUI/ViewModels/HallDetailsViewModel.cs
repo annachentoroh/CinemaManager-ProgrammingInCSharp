@@ -1,83 +1,47 @@
-﻿using CinemaManager.Services;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CinemaManager.Services;
 using CinemaManager.Services.DTO;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace CinemaManager.MAUI.ViewModels
 {
-    public class HallDetailsViewModel : BindableObject, IQueryAttributable
+    // Атрибут QueryProperty "ловить" параметр HallId, який ми передали з головної сторінки
+    [QueryProperty(nameof(HallId), "HallId")]
+    public partial class HallDetailsViewModel : ObservableObject
     {
         private readonly ICinemaService _cinemaService;
 
-        public Guid HallId { get; set; }
+        [ObservableProperty]
+        private Guid hallId;
 
-        private string _hallName;
-        public string HallName
-        {
-            get => _hallName;
-            set { _hallName = value; OnPropertyChanged(); }
-        }
+        [ObservableProperty]
+        private CinemaHallDetailsDTO hallDetails;
 
-        private string _hallDescription;
-        public string HallDescription
-        {
-            get => _hallDescription;
-            set { _hallDescription = value; OnPropertyChanged(); }
-        }
+        [ObservableProperty]
+        private int totalDuration;
 
-        private int _totalSeats;
-        public int TotalSeats
-        {
-            get => _totalSeats;
-            set { _totalSeats = value; OnPropertyChanged(); }
-        }
-
-        public ObservableCollection<MovieSessionListDTO> Sessions { get; set; } = new ObservableCollection<MovieSessionListDTO>();
-
-        private MovieSessionListDTO _selectedSession;
-        public MovieSessionListDTO SelectedSession
-        {
-            get => _selectedSession;
-            set { _selectedSession = value; OnPropertyChanged(); }
-        }
-
-        public ICommand SessionSelectedCommand { get; }
+        [ObservableProperty]
+        private MovieSessionListDTO selectedSession;
 
         public HallDetailsViewModel(ICinemaService cinemaService)
         {
             _cinemaService = cinemaService;
-            SessionSelectedCommand = new Command(GoToSessionDetails);
         }
 
-        // Цей метод ловить словник з попередньої сторінки
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        // Цей метод автоматично викликається, коли MAUI записує сюди HallId
+        partial void OnHallIdChanged(Guid value)
         {
-            if (query.TryGetValue("HallId", out var hallIdObj) && hallIdObj is Guid id)
+            // Завантажуємо деталі залу і його сеанси
+            HallDetails = _cinemaService.GetHallDetails(value);
+            // Рахуємо суму хвилин усіх сеансів у цьому залі
+            if (HallDetails != null && HallDetails.Sessions != null)
             {
-                HallId = id;
-                LoadHallData(); // Завантажуємо дані ТІЛЬКИ коли точно маємо Guid
+                TotalDuration = HallDetails.Sessions.Sum(s => s.DurationMinutes);
             }
         }
 
-        private void LoadHallData()
-        {
-            var hallDetails = _cinemaService.GetHallDetails(HallId);
-
-            if (hallDetails != null)
-            {
-                HallName = hallDetails.Name;
-                HallDescription = hallDetails.Description;
-                TotalSeats = hallDetails.TotalSeats;
-
-                Sessions.Clear();
-                foreach (var session in hallDetails.Sessions)
-                {
-                    Sessions.Add(session);
-                }
-            }
-        }
-
-        private void GoToSessionDetails()
+        [RelayCommand]
+        private async Task SessionSelectedAsync()
         {
             if (SelectedSession == null) return;
 
@@ -86,8 +50,8 @@ namespace CinemaManager.MAUI.ViewModels
                 { "SessionId", SelectedSession.Id }
             };
 
-            Shell.Current.GoToAsync($"{nameof(SessionDetailsPage)}", parameters);
-
+            // Перехід на третю сторінку
+            await Shell.Current.GoToAsync(nameof(SessionDetailsPage), parameters);
             SelectedSession = null;
         }
     }
