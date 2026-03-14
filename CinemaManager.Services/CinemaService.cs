@@ -36,11 +36,14 @@ namespace CinemaManager.Services
                 Id = hall.Id,
                 Name = hall.Name,
                 TotalSeats = hall.SeatsCount,
+                HallType = hall.HallType.ToString(), // Беремо тип залу
                 Sessions = sessions.Select(s => new MovieSessionListDTO
                 {
                     Id = s.Id,
                     MovieTitle = s.MovieTitle,
-                    StartTime = s.StartTime
+                    StartTime = s.StartTime,
+                    Genre = s.Genre.ToString(),          // Беремо жанр
+                    DurationMinutes = s.DurationMinutes  // Беремо тривалість
                 }).ToList()
             };
         }
