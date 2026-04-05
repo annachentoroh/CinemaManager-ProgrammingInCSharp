@@ -1,23 +1,43 @@
 ﻿namespace CinemaManager.Services.DTO
 {
-    // Модель для списку сеансів
     public class MovieSessionListDTO
     {
         public Guid Id { get; set; }
-        public string MovieTitle { get; set; }
+        public string MovieTitle { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
-        public string Genre { get; set; } // Додали це
-        public int DurationMinutes { get; set; } // Знадобиться для підрахунку
+        public string Genre { get; set; } = string.Empty;
+        public int DurationMinutes { get; set; }
+        public int ReleaseYear { get; set; }
     }
 
-    // Модель для детальної інформації про сеанс
     public class MovieSessionDetailsDTO
     {
         public Guid Id { get; set; }
-        public string MovieTitle { get; set; }
-        public string Genre { get; set; }
+        public Guid CinemaHallId { get; set; }
+        public string MovieTitle { get; set; } = string.Empty;
+        public string Genre { get; set; } = string.Empty;
+        public int ReleaseYear { get; set; }
         public int DurationMinutes { get; set; }
         public DateTime StartTime { get; set; }
-        public decimal TicketPrice { get; set; }
+    }
+
+    public class MovieSessionCreateDTO
+    {
+        public Guid CinemaHallId { get; set; }
+        public string MovieTitle { get; set; } = string.Empty;
+        public string Genre { get; set; } = string.Empty;
+        public int ReleaseYear { get; set; }
+        public DateTime StartTime { get; set; }
+        public int DurationMinutes { get; set; }
+    }
+
+    public class MovieSessionUpdateDTO
+    {
+        public Guid Id { get; set; }
+        public string MovieTitle { get; set; } = string.Empty;
+        public string Genre { get; set; } = string.Empty;
+        public int ReleaseYear { get; set; }
+        public DateTime StartTime { get; set; }
+        public int DurationMinutes { get; set; }
     }
 }

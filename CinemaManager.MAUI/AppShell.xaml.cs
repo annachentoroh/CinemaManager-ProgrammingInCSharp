@@ -6,8 +6,9 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
-        // Реєструємо маршрути для навігації
         Routing.RegisterRoute(nameof(HallDetailsPage), typeof(HallDetailsPage));
         Routing.RegisterRoute(nameof(SessionDetailsPage), typeof(SessionDetailsPage));
+        Routing.RegisterRoute(nameof(HallEditPage), typeof(HallEditPage));
+        Routing.RegisterRoute(nameof(SessionEditPage), typeof(SessionEditPage));
     }
 }

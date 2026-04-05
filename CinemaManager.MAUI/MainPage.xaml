@@ -4,25 +4,75 @@
              x:Class="CinemaManager.MAUI.MainPage"
              Title="Менеджер Кіносеансів">
 
-    <StackLayout Padding="20">
-        <Label Text="Список кінозалів:" FontSize="24" FontAttributes="Bold" Margin="0,0,0,10"/>
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Padding="16">
 
-        <CollectionView x:Name="HallsCollection" 
-                SelectionMode="Single" 
-                ItemsSource="{Binding Halls}"
-                SelectedItem="{Binding SelectedHall}"
-                SelectionChangedCommand="{Binding HallSelectedCommand}">
+        <!-- Індикатор прогресу -->
+        <ActivityIndicator Grid.Row="0"
+                           IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           Color="RoyalBlue"
+                           HorizontalOptions="Center" />
+        <Label Grid.Row="0"
+               Text="{Binding BusyMessage}"
+               IsVisible="{Binding IsBusy}"
+               HorizontalOptions="Center"
+               TextColor="RoyalBlue" />
+
+        <!-- Пошук -->
+        <SearchBar Grid.Row="1"
+                   Text="{Binding SearchText}"
+                   Placeholder="Пошук залів..."
+                   Margin="0,8" />
+
+        <!-- Сортування + кнопка Додати -->
+        <HorizontalStackLayout Grid.Row="2" Spacing="10" Margin="0,0,0,8">
+            <Label Text="Сортування:" VerticalOptions="Center" />
+            <Picker ItemsSource="{Binding SortOptions}"
+                    SelectedItem="{Binding SortOption}"
+                    HorizontalOptions="FillAndExpand"
+                    WidthRequest="160" />
+            <Button Text="+ Зал"
+                    Command="{Binding AddHallCommand}"
+                    BackgroundColor="RoyalBlue"
+                    TextColor="White"
+                    CornerRadius="8" />
+        </HorizontalStackLayout>
+
+        <!-- Список залів -->
+        <CollectionView Grid.Row="3"
+                        SelectionMode="Single"
+                        ItemsSource="{Binding Halls}"
+                        SelectedItem="{Binding SelectedHall}"
+                        SelectionChangedCommand="{Binding HallSelectedCommand}">
+            <CollectionView.EmptyView>
+                <Label Text="Жодного залу не знайдено" HorizontalOptions="Center" Margin="20" TextColor="Gray" />
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,5" Padding="15" BorderColor="Gray" CornerRadius="8">
-                        <StackLayout>
-                            <Label Text="{Binding Name}" FontSize="18" TextColor="Blue" FontAttributes="Bold"/>
-                            <Label Text="{Binding HallType, StringFormat='Тип: {0}'}"/>
-                            <Label Text="{Binding TotalSeats, StringFormat='Місць: {0}'}"/>
-                        </StackLayout>
+                    <Frame Margin="0,5" Padding="15" BorderColor="LightGray" CornerRadius="10">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding Name}" FontSize="18" TextColor="Blue" FontAttributes="Bold"/>
+                                <Label Text="{Binding HallType, StringFormat='Тип: {0}'}" TextColor="DarkSlateGray"/>
+                                <Label Text="{Binding TotalSeats, StringFormat='Місць: {0}'}"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                <Button Text="✏️"
+                                        BackgroundColor="Transparent"
+                                        TextColor="DarkSlateGray"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditHallCommand}"
+                                        CommandParameter="{Binding .}" />
+                                <Button Text="🗑️"
+                                        BackgroundColor="Transparent"
+                                        TextColor="Red"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteHallCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </VerticalStackLayout>
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </StackLayout>
+
+    </Grid>
 </ContentPage>

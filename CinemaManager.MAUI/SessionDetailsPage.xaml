@@ -5,30 +5,41 @@
              Title="Деталі Сеансу">
 
     <VerticalStackLayout Padding="20" Spacing="15">
-        <Label Text="Інформація про кіносеанс:" FontSize="20" FontAttributes="Bold" TextColor="DarkSlateGray" Margin="0,0,0,10" />
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
+                           Color="RoyalBlue" HorizontalOptions="Center" />
 
-        <Frame Padding="20" BorderColor="LightGray" CornerRadius="12" BackgroundColor="White" HasShadow="True">
+        <Label Text="Інформація про кіносеанс:" FontSize="20" FontAttributes="Bold" />
+
+        <Frame Padding="20" BorderColor="LightGray" CornerRadius="12" BackgroundColor="White">
             <VerticalStackLayout Spacing="12">
-
-                <Label Text="{Binding SessionDetails.MovieTitle}" FontSize="26" TextColor="Blue" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,10" />
+                <Label Text="{Binding SessionDetails.MovieTitle}" FontSize="26" TextColor="Blue"
+                       FontAttributes="Bold" HorizontalOptions="Center" />
 
                 <HorizontalStackLayout Spacing="10">
-                    <Label Text="Жанр:" FontAttributes="Bold" FontSize="16" TextColor="Black" />
+                    <Label Text="Жанр:" FontAttributes="Bold" FontSize="16" />
                     <Label Text="{Binding SessionDetails.Genre}" FontSize="16" TextColor="DarkSlateGray" />
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout Spacing="10">
-                    <Label Text="Час початку:" FontAttributes="Bold" FontSize="16" TextColor="Black" />
-                    <Label Text="{Binding SessionDetails.StartTime, StringFormat='{0:dd.MM.yyyy HH:mm}'}" FontSize="16" TextColor="DarkSlateGray" />
+                    <Label Text="Рік випуску:" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding SessionDetails.ReleaseYear}" FontSize="16" TextColor="DarkSlateGray" />
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout Spacing="10">
-                    <Label Text="Тривалість:" FontAttributes="Bold" FontSize="16" TextColor="Black" />
-                    <Label Text="{Binding SessionDetails.DurationMinutes, StringFormat='{0} хвилин'}" FontSize="16" TextColor="DarkSlateGray" />
+                    <Label Text="Початок:" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding SessionDetails.StartTime, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                           FontSize="16" TextColor="DarkSlateGray" />
                 </HorizontalStackLayout>
 
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="Тривалість:" FontAttributes="Bold" FontSize="16" />
+                    <Label Text="{Binding SessionDetails.DurationMinutes, StringFormat='{0} хвилин'}"
+                           FontSize="16" TextColor="DarkSlateGray" />
+                </HorizontalStackLayout>
+
+                <Button Text="✏️ Редагувати" Command="{Binding EditCommand}"
+                        BackgroundColor="RoyalBlue" TextColor="White" CornerRadius="8" />
             </VerticalStackLayout>
         </Frame>
-
     </VerticalStackLayout>
 </ContentPage>

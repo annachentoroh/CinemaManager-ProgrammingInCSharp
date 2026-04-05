@@ -4,13 +4,17 @@ namespace CinemaManager.Services
 {
     public interface ICinemaService
     {
-        // Отримати всі зали для головної сторінки
-        IEnumerable<CinemaHallListDTO> GetAllHalls();
+        // Halls
+        Task<IEnumerable<CinemaHallListDTO>> GetAllHallsAsync();
+        Task<CinemaHallDetailsDTO?> GetHallDetailsAsync(Guid hallId);
+        Task<CinemaHallListDTO> CreateHallAsync(CinemaHallCreateDTO dto);
+        Task UpdateHallAsync(CinemaHallUpdateDTO dto);
+        Task DeleteHallAsync(Guid hallId);
 
-        // Отримати деталі залу та його сеанси для другої сторінки
-        CinemaHallDetailsDTO GetHallDetails(Guid hallId);
-
-        // Отримати деталі конкретного сеансу для третьої сторінки
-        MovieSessionDetailsDTO GetSessionDetails(Guid sessionId);
+        // Sessions
+        Task<MovieSessionDetailsDTO?> GetSessionDetailsAsync(Guid sessionId);
+        Task<MovieSessionListDTO> CreateSessionAsync(MovieSessionCreateDTO dto);
+        Task UpdateSessionAsync(MovieSessionUpdateDTO dto);
+        Task DeleteSessionAsync(Guid sessionId);
     }
 }

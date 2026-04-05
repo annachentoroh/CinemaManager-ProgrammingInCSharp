@@ -4,9 +4,22 @@ namespace CinemaManager.DB
 {
     public interface ICinemaRepo
     {
-        List<CinemaHall> GetAllHalls();
-        CinemaHall GetHallById(Guid hallId);
-        MovieSession GetSessionById(Guid sessionId);
-        List<MovieSession> GetSessionsByHallId(Guid hallId);
+        // Read
+        Task<List<CinemaHall>> GetAllHallsAsync();
+        Task<CinemaHall?> GetHallByIdAsync(Guid hallId);
+        Task<List<MovieSession>> GetSessionsByHallIdAsync(Guid hallId);
+        Task<MovieSession?> GetSessionByIdAsync(Guid sessionId);
+
+        // Create
+        Task<CinemaHall> AddHallAsync(CinemaHall hall);
+        Task<MovieSession> AddSessionAsync(MovieSession session);
+
+        // Update
+        Task UpdateHallAsync(CinemaHall hall);
+        Task UpdateSessionAsync(MovieSession session);
+
+        // Delete
+        Task DeleteHallAsync(Guid hallId);      // каскадно видаляє сеанси
+        Task DeleteSessionAsync(Guid sessionId);
     }
 }

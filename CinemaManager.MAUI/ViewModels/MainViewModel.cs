@@ -1,57 +1,127 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using CinemaManager.Services;
+﻿using CinemaManager.Services;
 using CinemaManager.Services.DTO;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace CinemaManager.MAUI.ViewModels
 {
-    public partial class MainViewModel : ObservableObject
+    public class MainViewModel : BaseViewModel
     {
-        private readonly ICinemaService _cinemaService;
+        private readonly ICinemaService _service;
 
-        // Тепер використовуємо CinemaHallDetailsDTO, бо там є TotalSeats
-        [ObservableProperty]
-        private ObservableCollection<CinemaHallDetailsDTO> halls;
+        // Повний список (для фільтрації)
+        private List<CinemaHallListDTO> _allHalls = new();
 
-        [ObservableProperty]
-        private CinemaHallDetailsDTO selectedHall;
-
-        public MainViewModel(ICinemaService cinemaService)
+        private ObservableCollection<CinemaHallListDTO> _halls = new();
+        public ObservableCollection<CinemaHallListDTO> Halls
         {
-            _cinemaService = cinemaService;
-            LoadHalls();
+            get => _halls;
+            set => SetProperty(ref _halls, value);
         }
 
-        private void LoadHalls()
+        private CinemaHallListDTO? _selectedHall;
+        public CinemaHallListDTO? SelectedHall
         {
-            var basicHalls = _cinemaService.GetAllHalls();
-            var detailedHalls = new ObservableCollection<CinemaHallDetailsDTO>();
-
-            // Завантажуємо деталі для кожного залу, щоб відобразити місця
-            foreach (var basicHall in basicHalls)
-            {
-                var details = _cinemaService.GetHallDetails(basicHall.Id);
-                if (details != null)
-                {
-                    detailedHalls.Add(details);
-                }
-            }
-            Halls = detailedHalls;
+            get => _selectedHall;
+            set => SetProperty(ref _selectedHall, value);
         }
 
-        [RelayCommand]
-        private async Task HallSelectedAsync()
+        // Пошук
+        private string _searchText = string.Empty;
+        public string SearchText
         {
-            if (SelectedHall == null) return;
+            get => _searchText;
+            set { SetProperty(ref _searchText, value); ApplyFilter(); }
+        }
 
-            var parameters = new Dictionary<string, object>
+        // Сортування
+        private string _sortOption = "Назва ↑";
+        public string SortOption
+        {
+            get => _sortOption;
+            set { SetProperty(ref _sortOption, value); ApplyFilter(); }
+        }
+
+        public List<string> SortOptions { get; } = new()
+        {
+            "Назва ↑", "Назва ↓", "Місць ↑", "Місць ↓"
+        };
+
+        // Команди
+        public ICommand LoadCommand { get; }
+        public ICommand HallSelectedCommand { get; }
+        public ICommand AddHallCommand { get; }
+        public ICommand DeleteHallCommand { get; }
+        public ICommand EditHallCommand { get; }
+
+        public MainViewModel(ICinemaService service)
+        {
+            _service = service;
+            LoadCommand = new Command(async () => await LoadAsync());
+            HallSelectedCommand = new Command(async () => await NavigateToHallAsync());
+            AddHallCommand = new Command(async () => await AddHallAsync());
+            DeleteHallCommand = new Command<CinemaHallListDTO>(async (h) => await DeleteHallAsync(h));
+            EditHallCommand = new Command<CinemaHallListDTO>(async (h) => await EditHallAsync(h));
+        }
+
+        public async Task LoadAsync()
+        {
+            await ExecuteBusyAsync(async () =>
             {
-                { "HallId", SelectedHall.Id }
+                var halls = await _service.GetAllHallsAsync();
+                _allHalls = halls.ToList();
+                ApplyFilter();
+            });
+        }
+
+        private void ApplyFilter()
+        {
+            var filtered = _allHalls
+                .Where(h => string.IsNullOrWhiteSpace(SearchText) ||
+                            h.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            filtered = SortOption switch
+            {
+                "Назва ↑" => filtered.OrderBy(h => h.Name).ToList(),
+                "Назва ↓" => filtered.OrderByDescending(h => h.Name).ToList(),
+                "Місць ↑" => filtered.OrderBy(h => h.TotalSeats).ToList(),
+                "Місць ↓" => filtered.OrderByDescending(h => h.TotalSeats).ToList(),
+                _ => filtered
             };
 
-            await Shell.Current.GoToAsync(nameof(HallDetailsPage), parameters);
-            SelectedHall = null;
+            Halls = new ObservableCollection<CinemaHallListDTO>(filtered);
+        }
+
+        private async Task NavigateToHallAsync()
+        {
+            if (SelectedHall == null) return;
+            var id = SelectedHall.Id;
+            SelectedHall = null; // скидаємо виділення
+            await Shell.Current.GoToAsync($"{nameof(HallDetailsPage)}?hallId={id}");
+        }
+
+        private async Task AddHallAsync()
+        {
+            await Shell.Current.GoToAsync(nameof(HallEditPage));
+        }
+
+        private async Task DeleteHallAsync(CinemaHallListDTO hall)
+        {
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Видалення", $"Видалити зал '{hall.Name}'? Всі сеанси також будуть видалені.", "Так", "Ні");
+            if (!confirm) return;
+
+            await ExecuteBusyAsync(async () =>
+            {
+                await _service.DeleteHallAsync(hall.Id);
+                await LoadAsync();
+            }, "Видалення...");
+        }
+
+        private async Task EditHallAsync(CinemaHallListDTO hall)
+        {
+            await Shell.Current.GoToAsync($"{nameof(HallEditPage)}?hallId={hall.Id}");
         }
     }
 }

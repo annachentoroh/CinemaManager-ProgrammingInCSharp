@@ -4,32 +4,69 @@
              x:Class="CinemaManager.MAUI.HallDetailsPage"
              Title="Деталі Залу">
 
-    <Grid Padding="20" RowDefinitions="Auto, *">
+    <Grid Padding="16" RowDefinitions="Auto, Auto, Auto, Auto, *">
 
-        <VerticalStackLayout Grid.Row="0" Spacing="5" Margin="0,0,0,10">
-            <Label Text="{Binding HallDetails.Name}" FontSize="24" TextColor="Blue" FontAttributes="Bold" />
-            <HorizontalStackLayout Spacing="15" Margin="0,0,0,10">
-                <Label Text="{Binding HallDetails.HallType, StringFormat='Тип: {0}'}" FontSize="16" TextColor="DarkSlateGray" FontAttributes="Bold" />
-                <Label Text="{Binding HallDetails.TotalSeats, StringFormat='Кількість місць: {0}'}" FontSize="16" />
+        <!-- Busy Indicator -->
+        <ActivityIndicator Grid.Row="0" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
+                           Color="RoyalBlue" HorizontalOptions="Center" />
+
+        <!-- Інформація про зал -->
+        <VerticalStackLayout Grid.Row="1" Spacing="4" Margin="0,0,0,8">
+            <Grid ColumnDefinitions="*, Auto">
+                <Label Grid.Column="0" Text="{Binding HallDetails.Name}" FontSize="22" TextColor="Blue" FontAttributes="Bold" />
+                <Button Grid.Column="1" Text="✏️ Редагувати" Command="{Binding EditHallCommand}"
+                        BackgroundColor="Transparent" TextColor="RoyalBlue" />
+            </Grid>
+            <HorizontalStackLayout Spacing="15">
+                <Label Text="{Binding HallDetails.HallType, StringFormat='Тип: {0}'}" FontAttributes="Bold" />
+                <Label Text="{Binding HallDetails.TotalSeats, StringFormat='Місць: {0}'}" />
             </HorizontalStackLayout>
-            <Label Text="Кіносеанси:" FontSize="20" FontAttributes="Bold" />
-            <Label Text="{Binding TotalDuration, StringFormat='Загальна тривалість: {0} хв'}" FontSize="14" TextColor="DarkGreen" />
+            <Label Text="{Binding TotalDuration, StringFormat='Загальна тривалість: {0} хв'}" TextColor="DarkGreen" />
         </VerticalStackLayout>
 
-        <CollectionView x:Name="SessionsCollection" 
-                Grid.Row="1"
-                SelectionMode="Single"
-                ItemsSource="{Binding HallDetails.Sessions}"
-                SelectedItem="{Binding SelectedSession}"
-                SelectionChangedCommand="{Binding SessionSelectedCommand}">
+        <!-- Пошук сеансів -->
+        <SearchBar Grid.Row="2" Text="{Binding SearchText}" Placeholder="Пошук сеансів..." Margin="0,4" />
+
+        <!-- Сортування + Додати -->
+        <HorizontalStackLayout Grid.Row="3" Spacing="10" Margin="0,0,0,8">
+            <Label Text="Сортування:" VerticalOptions="Center" />
+            <Picker ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SortOption}" WidthRequest="160" />
+            <Button Text="+ Сеанс" Command="{Binding AddSessionCommand}"
+                    BackgroundColor="RoyalBlue" TextColor="White" CornerRadius="8" />
+        </HorizontalStackLayout>
+
+        <!-- Список сеансів -->
+        <CollectionView Grid.Row="4"
+                        SelectionMode="Single"
+                        ItemsSource="{Binding Sessions}"
+                        SelectedItem="{Binding SelectedSession}"
+                        SelectionChangedCommand="{Binding SessionSelectedCommand}">
+            <CollectionView.EmptyView>
+                <Label Text="Жодного сеансу не знайдено" HorizontalOptions="Center" Margin="20" TextColor="Gray" />
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,5" Padding="15" BorderColor="LightGray" CornerRadius="8">
-                        <VerticalStackLayout>
-                            <Label Text="{Binding MovieTitle}" FontSize="16" TextColor="RoyalBlue" FontAttributes="Bold"/>
-                            <Label Text="{Binding Genre, StringFormat='Жанр: {0}'}"/>
-                            <Label Text="{Binding StartTime, StringFormat='Початок: {0:HH:mm}'}"/>
-                        </VerticalStackLayout>
+                    <Frame Margin="0,5" Padding="12" BorderColor="LightGray" CornerRadius="8">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding MovieTitle}" FontSize="16" TextColor="RoyalBlue" FontAttributes="Bold"/>
+                                <Label Text="{Binding Genre, StringFormat='Жанр: {0}'}"/>
+                                <Label Text="{Binding StartTime, StringFormat='Початок: {0:HH:mm}'}"/>
+                                <Label Text="{Binding DurationMinutes, StringFormat='Тривалість: {0} хв'}" TextColor="Gray"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                <Button Text="✏️"
+                                        BackgroundColor="Transparent"
+                                        TextColor="DarkSlateGray"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditSessionCommand}"
+                                        CommandParameter="{Binding .}" />
+                                <Button Text="🗑️"
+                                        BackgroundColor="Transparent"
+                                        TextColor="Red"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteSessionCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </VerticalStackLayout>
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

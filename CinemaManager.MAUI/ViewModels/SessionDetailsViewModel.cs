@@ -1,31 +1,52 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CinemaManager.Services;
+﻿using CinemaManager.Services;
 using CinemaManager.Services.DTO;
+using System.Windows.Input;
 
 namespace CinemaManager.MAUI.ViewModels
 {
-    // "Ловимо" параметр SessionId, який ми передали з другої сторінки
-    [QueryProperty(nameof(SessionId), "SessionId")]
-    public partial class SessionDetailsViewModel : ObservableObject
+    [QueryProperty(nameof(SessionId), "sessionId")]
+    public class SessionDetailsViewModel : BaseViewModel
     {
-        private readonly ICinemaService _cinemaService;
+        private readonly ICinemaService _service;
 
-        [ObservableProperty]
-        private Guid sessionId;
-
-        [ObservableProperty]
-        private MovieSessionDetailsDTO sessionDetails;
-
-        public SessionDetailsViewModel(ICinemaService cinemaService)
+        private string? _sessionId;
+        public string? SessionId
         {
-            _cinemaService = cinemaService;
+            get => _sessionId;
+            set { _sessionId = value; OnPropertyChanged(); }
         }
 
-        // Автоматично спрацьовує, коли MAUI записує сюди отриманий ID
-        partial void OnSessionIdChanged(Guid value)
+        private MovieSessionDetailsDTO? _sessionDetails;
+        public MovieSessionDetailsDTO? SessionDetails
         {
-            // Отримуємо всі деталі сеансу з бази через сервіс
-            SessionDetails = _cinemaService.GetSessionDetails(value);
+            get => _sessionDetails;
+            set => SetProperty(ref _sessionDetails, value);
+        }
+
+        public ICommand LoadCommand { get; }
+        public ICommand EditCommand { get; }
+
+        public SessionDetailsViewModel(ICinemaService service)
+        {
+            _service = service;
+            LoadCommand = new Command(async () => await LoadAsync());
+            EditCommand = new Command(async () => await EditAsync());
+        }
+
+        public async Task LoadAsync()
+        {
+            if (string.IsNullOrEmpty(SessionId)) return;
+            await ExecuteBusyAsync(async () =>
+            {
+                SessionDetails = await _service.GetSessionDetailsAsync(Guid.Parse(SessionId));
+            });
+        }
+
+        private async Task EditAsync()
+        {
+            if (SessionDetails == null) return;
+            await Shell.Current.GoToAsync(
+                $"{nameof(SessionEditPage)}?sessionId={SessionDetails.Id}&hallId={SessionDetails.CinemaHallId}");
         }
     }
 }

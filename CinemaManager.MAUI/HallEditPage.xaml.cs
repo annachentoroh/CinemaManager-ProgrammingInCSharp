@@ -2,11 +2,11 @@
 
 namespace CinemaManager.MAUI;
 
-public partial class MainPage : ContentPage
+public partial class HallEditPage : ContentPage
 {
-    private readonly MainViewModel _viewModel;
+    private readonly HallEditViewModel _viewModel;
 
-    public MainPage(MainViewModel viewModel)
+    public HallEditPage(HallEditViewModel viewModel)
     {
         InitializeComponent();
         _viewModel = viewModel;

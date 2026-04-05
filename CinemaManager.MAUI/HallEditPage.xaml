@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage BackgroundColor="LavenderBlush"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CinemaManager.MAUI.HallEditPage"
+             Title="{Binding PageTitle}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
+                               Color="RoyalBlue" HorizontalOptions="Center" />
+
+            <Label Text="Назва залу:" FontAttributes="Bold" />
+            <Entry Text="{Binding Name}" Placeholder="Введіть назву..." />
+
+            <Label Text="Кількість місць:" FontAttributes="Bold" />
+            <Entry Text="{Binding TotalSeats}" Keyboard="Numeric" Placeholder="50" />
+
+            <Label Text="Тип залу:" FontAttributes="Bold" />
+            <Picker ItemsSource="{Binding HallTypes}" SelectedItem="{Binding SelectedHallType}" />
+
+            <HorizontalStackLayout Spacing="15" HorizontalOptions="Center" Margin="0,20,0,0">
+                <Button Text="Зберегти" Command="{Binding SaveCommand}"
+                        BackgroundColor="RoyalBlue" TextColor="White" CornerRadius="8"
+                        WidthRequest="140" />
+                <Button Text="Скасувати" Command="{Binding CancelCommand}"
+                        BackgroundColor="LightGray" CornerRadius="8"
+                        WidthRequest="140" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
