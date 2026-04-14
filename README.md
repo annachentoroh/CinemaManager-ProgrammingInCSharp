@@ -25,7 +25,7 @@
 ### 4. `CinemaManager.MAUI` (Графічний застосунок)
 Рівень представлення, реалізований на базі патерну MVVM:
 * **ViewModels:** Класи MainViewModel.cs, HallDetailsViewModel.cs, SessionDetailsViewModel.cs, а також нові HallEditViewModel.cs та SessionEditViewModel.cs для операцій редагування. Використано CommunityToolkit.Mvvm для реактивного програмування.
-* **Views:**Сторінки MainPage, HallDetailsPage, SessionDetailsPage та нові форми HallEditPage і SessionEditPage. Файли .xaml.cs містять лише ініціалізацію та задання BindingContext.
+* **Views:** Сторінки MainPage, HallDetailsPage, SessionDetailsPage та нові форми HallEditPage і SessionEditPage. Файли .xaml.cs містять лише ініціалізацію та задання BindingContext.
 * **Dependency Injection:** Впровадження залежностей (Singleton для сервісів та Transient для сторінок/ViewModels) реалізовано у MauiProgram.cs.
 * **Асинхронний UI:** Реалізовано відображення індикатора прогресу та блокування операцій під час виконання асинхронних запитів до бази даних.
 
